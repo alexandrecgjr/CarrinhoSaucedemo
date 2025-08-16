@@ -8,6 +8,8 @@ import time
 from utils.webdriver_config import WebDriverConfig
 from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
+from pages.cart_page import CartPage
+from pages.checkout_page import CheckoutPage
 
 
 class TestSauceDemo:
@@ -128,8 +130,58 @@ class TestSauceDemo:
         # Assert - Verificar se conseguiu acessar o carrinho
         assert "cart" in self.driver.current_url.lower(), "Não conseguiu acessar o carrinho"
 
+    def test_fluxo_compra_completo_aleatorio(self):
+        """
+        Fluxo completo de compra:
+        - Login
+        - Seleciona 2 produtos aleatórios
+        - Valida subtotal, imposto 8% e total
+        - Conclui o checkout
+        """
+        pagina_login = LoginPage(self.driver)
+        produtos_page = ProductsPage(self.driver)
+        
+        # Login
+        pagina_login.acessar_pagina_login(self.url_site)
+        pagina_login.fazer_login(self.usuario, self.senha)
+        time.sleep(2)
+        assert produtos_page.verificar_se_esta_na_pagina_produtos()
+        
+        # Selecionar 2 produtos aleatórios e adicionar ao carrinho
+        selecionados = produtos_page.adicionar_produtos_aleatorios(2)
+        assert len(selecionados) == 2, "Não foi possível adicionar 2 produtos aleatórios"
+        subtotal_esperado = round(sum(p["preco"] for p in selecionados), 2)
+        
+        # Ir para o carrinho e conferir itens
+        produtos_page.clicar_no_carrinho()
+        cart_page = CartPage(self.driver)
+        itens_carrinho = cart_page.obter_itens_carrinho()
+        assert len(itens_carrinho) == 2, "Carrinho não possui 2 itens"
+        subtotal_carrinho = round(sum(i["preco"] for i in itens_carrinho), 2)
+        assert subtotal_carrinho == subtotal_esperado, f"Subtotal do carrinho ({subtotal_carrinho}) difere do esperado ({subtotal_esperado})"
+        
+        # Checkout - Step One
+        cart_page.clicar_checkout()
+        checkout_page = CheckoutPage(self.driver)
+        checkout_page.preencher_informacoes_pessoais("Alex", "Tester", "12345")
+        checkout_page.continuar_para_resumo()
+        
+        # Resumo de pagamento
+        resumo = checkout_page.obter_resumo_valores()
+        imposto_esperado = round(subtotal_esperado * 0.08, 2)
+        total_esperado = round(subtotal_esperado + imposto_esperado, 2)
+        
+        assert resumo["subtotal"] == subtotal_esperado, f"Subtotal incorreto: {resumo['subtotal']} != {subtotal_esperado}"
+        assert resumo["taxa"] == imposto_esperado, f"Imposto incorreto: {resumo['taxa']} != {imposto_esperado}"
+        assert resumo["total"] == total_esperado, f"Total incorreto: {resumo['total']} != {total_esperado}"
+        
+        # Finalizar compra
+        checkout_page.finalizar_compra()
+        assert checkout_page.verificar_compra_concluida(), "Compra não foi concluída com sucesso"
+
 
 if __name__ == "__main__":
     # Executar os testes
     pytest.main([__file__, "-v", "--tb=short"])
+
 

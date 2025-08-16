@@ -6,6 +6,7 @@ Contém os elementos e métodos para interagir com a página de produtos
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import random
 
 
 class ProductsPage:
@@ -56,6 +57,35 @@ class ProductsPage:
         )
         print(f"Encontrados {len(produtos)} produtos na página")
         return produtos
+
+    def adicionar_produtos_aleatorios(self, quantidade: int = 2):
+        """
+        Adiciona 'quantidade' produtos aleatórios ao carrinho e retorna seus nomes e preços.
+
+        Returns: list[dict] -> [{"nome": str, "preco": float}]
+        """
+        todos = self.obter_lista_produtos()
+        random.shuffle(todos)
+        selecionados = []
+
+        for item in todos:
+            if len(selecionados) >= quantidade:
+                break
+            try:
+                nome = item.find_element(By.CLASS_NAME, "inventory_item_name").text.strip()
+                preco_texto = item.find_element(By.CLASS_NAME, "inventory_item_price").text.strip().replace("$", "").replace(",", "")
+                preco = float(preco_texto)
+                # Botão dentro do item
+                botao = item.find_element(By.TAG_NAME, "button")
+                if "Add to cart" in botao.text or "Add" in botao.text or botao.get_attribute("data-test").startswith("add-to-cart"):
+                    botao.click()
+                    selecionados.append({"nome": nome, "preco": preco})
+                    print(f"Produto aleatório adicionado: {nome} - ${preco}")
+            except Exception as e:
+                print(f"Falha ao adicionar item aleatório: {e}")
+
+        print(f"Total aleatórios adicionados: {len(selecionados)}")
+        return selecionados
     
     def adicionar_produto_ao_carrinho(self, nome_produto):
         """
