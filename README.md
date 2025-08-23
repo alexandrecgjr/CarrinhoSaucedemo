@@ -64,7 +64,7 @@ CarrinhoSaucedemo/
 
 1. **Clone o repositório:**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/alexandrecgjr/CarrinhoSaucedemo.git
 cd CarrinhoSaucedemo
 ```
 
@@ -217,31 +217,7 @@ pytest test_fluxo_completo_compra.py -v -s --log-cli-level=DEBUG
 - **JSON**: Dados estruturados
 - **JUnit XML**: Compatível com CI/CD
 
-## 🤝 Contribuição
+## 👥 Autor
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## 👥 Autores
-
-- **Seu Nome** - *Desenvolvimento inicial* - [SeuGitHub](https://github.com/seugithub)
-
-## 🙏 Agradecimentos
-
-- Sauce Labs pelo ambiente de teste demo
-- Comunidade Python/Selenium
-- Contribuidores do projeto
-
----
-
-**Última atualização**: Dezembro 2024
-**Versão**: 1.0.0
-
+- **Alexandre C**
 
