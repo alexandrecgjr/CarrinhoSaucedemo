@@ -13,6 +13,21 @@ import time
 class WebDriverConfig:
     """Classe para configurar e gerenciar o WebDriver"""
     
+    def __init__(self):
+        """Inicializa a configuração do WebDriver"""
+        pass
+    
+    def obter_driver(self):
+        """
+        Retorna uma instância configurada do Chrome WebDriver
+        
+        Returns:
+            webdriver.Chrome: Instância do Chrome WebDriver configurada
+        """
+        driver = self.configurar_chrome_driver()
+        self.configurar_driver_com_espera_implicita(driver)
+        return driver
+    
     @staticmethod
     def configurar_chrome_driver():
         """
@@ -45,12 +60,22 @@ class WebDriverConfig:
         
         # Inicializar o driver
         try:
+            # Tentar com ChromeDriverManager primeiro
             service = Service(ChromeDriverManager().install())
             driver = webdriver.Chrome(service=service, options=chrome_options)
         except Exception as e:
-            print(f"Erro ao inicializar ChromeDriver: {e}")
-            # Tentar sem o service
-            driver = webdriver.Chrome(options=chrome_options)
+            print(f"Erro ao inicializar ChromeDriver com ChromeDriverManager: {e}")
+            try:
+                # Tentar sem service (usando PATH)
+                driver = webdriver.Chrome(options=chrome_options)
+            except Exception as e2:
+                print(f"Erro ao inicializar ChromeDriver sem service: {e2}")
+                # Última tentativa: usar driver local
+                try:
+                    driver = webdriver.Chrome(options=chrome_options)
+                except Exception as e3:
+                    print(f"Erro final ao inicializar ChromeDriver: {e3}")
+                    raise Exception("Não foi possível inicializar o ChromeDriver")
         
         # Executar script para remover propriedades de automação
         driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")

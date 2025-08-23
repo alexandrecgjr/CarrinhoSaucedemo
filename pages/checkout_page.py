@@ -67,3 +67,34 @@ class CheckoutPage:
             return "Thank you" in cabecalho.text or "Obrigado" in cabecalho.text
         except:
             return False
+    
+    def preencher_informacoes(self, primeiro_nome: str, sobrenome: str, cep: str):
+        """Alias para preencher_informacoes_pessoais"""
+        self.preencher_informacoes_pessoais(primeiro_nome, sobrenome, cep)
+    
+    def continuar_checkout(self):
+        """Alias para continuar_para_resumo"""
+        self.continuar_para_resumo()
+    
+    def obter_subtotal(self):
+        """Obtém o subtotal do checkout"""
+        valores = self.obter_resumo_valores()
+        return valores["subtotal"]
+    
+    def obter_taxa_imposto(self):
+        """Obtém a taxa de imposto do checkout"""
+        valores = self.obter_resumo_valores()
+        return valores["taxa"]
+    
+    def obter_total_final(self):
+        """Obtém o total final do checkout"""
+        valores = self.obter_resumo_valores()
+        return valores["total"]
+    
+    def obter_mensagem_sucesso(self):
+        """Obtém a mensagem de sucesso após finalizar a compra"""
+        try:
+            cabecalho = self.wait.until(EC.presence_of_element_located(self.COMPLETE_HEADER))
+            return cabecalho.text
+        except:
+            return ""

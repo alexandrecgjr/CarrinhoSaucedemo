@@ -41,3 +41,17 @@ class CartPage:
         botao = self.wait.until(EC.element_to_be_clickable(self.CHECKOUT_BUTTON))
         botao.click()
         return True
+    
+    def ir_para_checkout(self):
+        """Alias para clicar_checkout"""
+        return self.clicar_checkout()
+    
+    def obter_produtos_carrinho(self):
+        """Alias para obter_itens_carrinho"""
+        return self.obter_itens_carrinho()
+    
+    def obter_preco_total(self):
+        """Obtém o preço total dos itens no carrinho"""
+        itens = self.obter_itens_carrinho()
+        total = sum(item['preco'] for item in itens)
+        return total

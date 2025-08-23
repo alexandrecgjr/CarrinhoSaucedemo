@@ -112,3 +112,16 @@ class LoginPage:
             return elemento_erro.text
         except:
             return ""
+    
+    def verificar_se_usuario_bloqueado(self):
+        """
+        Verifica se o usuário está bloqueado
+        
+        Returns:
+            bool: True se o usuário está bloqueado, False caso contrário
+        """
+        try:
+            mensagem_erro = self.obter_mensagem_erro()
+            return "locked out" in mensagem_erro.lower()
+        except:
+            return False
