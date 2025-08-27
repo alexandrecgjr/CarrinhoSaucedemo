@@ -42,18 +42,23 @@ Thumbs.db
 logs/
 *.log
 
-# Screenshots (opcional - você pode querer manter alguns)
+# Screenshots (gerados automaticamente durante testes)
 screenshots/
 *.png
 *.jpg
 *.jpeg
 
-# Relatórios gerados
+# Relatórios gerados automaticamente
 reports/
 allure-results/
 allure-report/
 *.html
 *.json
+*.xml
+
+# Arquivos de saída do Behave
+pretty.output
+behave_report.txt
 
 # Cache do pytest
 .pytest_cache/
